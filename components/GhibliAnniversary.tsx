@@ -116,7 +116,7 @@ export default function GhibliAnniversary() {
     useEffect(() => {
         if (!autoPlay) return;
         const hasClip = Boolean(chapter.audioId || chapter.audioUrl);
-        const secs = hasClip ? Math.min(5, Math.max(3, chapter.audioLen)) : 5;
+        const secs = hasClip ? Math.min(16, Math.max(7, chapter.audioLen)) : 16;
         const id = window.setTimeout(() => setIdx((i) => (i + 1) % totalRef.current), secs * 1000);
         return () => window.clearTimeout(id);
     }, [autoPlay, safeIdx, chapter.audioId, chapter.audioUrl, chapter.audioLen]);
