@@ -15,6 +15,7 @@ import Motes from "./Motes";
 import Terminal from "./Terminal";
 import ThenNow from "./ThenNow";
 import WineGlass from "./WineGlass";
+import EnterGate from "@/components/EnterGate";
 
 const FADE = {duration: 0.5, ease: "easeInOut"} as const;
 const CREAM = "#fbf1dc";
@@ -57,6 +58,7 @@ export default function GhibliAnniversary() {
     const [idx, setIdx] = useState(0);
     const [tab, setTab] = useState<Tab>("struggle");
     const [autoPlay, setAutoPlay] = useState(true); // journey plays by default
+    const [entered, setEntered] = useState(false);
     const [authed, setAuthed] = useState(false);
     const [loginOpen, setLoginOpen] = useState(false);
     const [editorOpen, setEditorOpen] = useState(false);
@@ -114,12 +116,12 @@ export default function GhibliAnniversary() {
 
     // auto-play: each chapter stays 3-5 s (its clip length, clamped), then moves on and loops
     useEffect(() => {
-        if (!autoPlay) return;
+        if (!autoPlay || !entered) return;
         const hasClip = Boolean(chapter.audioId || chapter.audioUrl);
-        const secs = hasClip ? Math.min(16, Math.max(7, chapter.audioLen)) : 16;
+        const secs = hasClip ? Math.min(20, Math.max(10, chapter.audioLen)) : 20;
         const id = window.setTimeout(() => setIdx((i) => (i + 1) % totalRef.current), secs * 1000);
         return () => window.clearTimeout(id);
-    }, [autoPlay, safeIdx, chapter.audioId, chapter.audioUrl, chapter.audioLen]);
+    }, [autoPlay,entered, safeIdx, chapter.audioId, chapter.audioUrl, chapter.audioLen]);
 
     // never auto-advance while the admin is editing
     useEffect(() => {
@@ -555,6 +557,8 @@ export default function GhibliAnniversary() {
                     />
                 )}
             </AnimatePresence>
+
+            <EnterGate open={!entered} accent={accent} name={profile.name || "Zargham Ali"} chapters={total} onEnter={() => setEntered(true)} />
 
             <Burst trigger={burst}/>
         </main>
